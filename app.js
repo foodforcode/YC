@@ -2,10 +2,36 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+mongoose.connect('mongodb://localhost:27017/yelp_camp', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
+
+//Schema Setup
+var campgroundSchema = new mongoose.Schema({
+	name: String,
+	image: String
+});
+
+var Campground = mongoose.model("Campground", campgroundSchema);
+
+// Campground.create(
+// 	{
+// 		name: "Yosemite",
+// 		image: "https://picjumbo.com/wp-content/uploads/camping-place-on-snowy-mountain-with-fjord-view-2210x1243.jpg"
+// 	}, function (err, campground){
+// 		if(err){
+// 			console.log(err);
+// 		} else {
+// 			console.log(campground.name + " has been added!");
+// 			console.log(campgrounds);
+// 		}
+// 	});
+
 
 app.get("/", function(req, res){
 	res.render("landing");
@@ -21,8 +47,15 @@ var campgrounds = [
 	];
 
 app.get("/campgrounds", function(req, res){
-	res.render("campgrounds", {campgrounds: campgrounds});
-	//{variable: property}
+	//get all campgrounds from DB
+	Campground.find({}, function(err, allcampgrounds){
+		if(err){
+			console.log(err);
+		} else {
+		res.render("campgrounds", {campgrounds:allcampgrounds});
+								//{variable: property}
+		}
+	});
 });
 
 app.get("/campgrounds/new", function(req, res){
@@ -34,10 +67,15 @@ app.post("/campgrounds", function(req, res){
 	var name = req.body.name;
 	var image = req.body.image;
 	var newCampground = {name: name, image: image};
-	campgrounds.push(newCampground);
-	//redirect back to page (refresh)
-	res.redirect("/campgrounds");
-	
+	//create new campground and save to db
+	Campground.create(newCampground, function(err, newlyCreated){
+		if(err){
+			console.log(err);
+		} else {
+			//redirect back to page (refresh)
+			res.redirect("/campgrounds");
+		}
+	});
 });
 
 app.get("*", function(req, res){
