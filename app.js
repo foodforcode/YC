@@ -14,7 +14,8 @@ app.set("view engine", "ejs");
 //Schema Setup
 var campgroundSchema = new mongoose.Schema({
 	name: String,
-	image: String
+	image: String,
+	description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
@@ -22,7 +23,8 @@ var Campground = mongoose.model("Campground", campgroundSchema);
 // Campground.create(
 // 	{
 // 		name: "Yosemite",
-// 		image: "https://picjumbo.com/wp-content/uploads/camping-place-on-snowy-mountain-with-fjord-view-2210x1243.jpg"
+// 		image: "https://picjumbo.com/wp-content/uploads/camping-place-on-snowy-mountain-with-fjord-view-2210x1243.jpg",
+// 		description: "Snowy area with great view!"
 // 	}, function (err, campground){
 // 		if(err){
 // 			console.log(err);
@@ -40,33 +42,28 @@ app.get("/", function(req, res){
 var campgrounds = [
 		{name: "salmon creek", image: "https://picjumbo.com/wp-content/uploads/skogafoss-waterfall-free-photo-2210x1473.jpg"},
 		{name: "Yosemite", image: "https://picjumbo.com/wp-content/uploads/camping-place-on-snowy-mountain-with-fjord-view-2210x1243.jpg"},
-		{name: "goat hill", image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format"},
-		{name: "salmon creek", image: "https://images.unsplash.com/photo-1517824806704-9040b037703b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format"},
-		{name: "Yosemite", image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format"},
 		{name: "goat hill", image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format"}
 	];
-
+//INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
 	//get all campgrounds from DB
 	Campground.find({}, function(err, allcampgrounds){
 		if(err){
 			console.log(err);
 		} else {
-		res.render("campgrounds", {campgrounds:allcampgrounds});
+		res.render("index", {campgrounds:allcampgrounds});
 								//{variable: property}
 		}
 	});
 });
 
-app.get("/campgrounds/new", function(req, res){
-	res.render("new");
-});
-
+//CREATE - add new campground to DB
 app.post("/campgrounds", function(req, res){
 	//get data from form and add to array
 	var name = req.body.name;
 	var image = req.body.image;
-	var newCampground = {name: name, image: image};
+	var desc = req.body.description;
+	var newCampground = {name: name, image: image, description: desc};
 	//create new campground and save to db
 	Campground.create(newCampground, function(err, newlyCreated){
 		if(err){
@@ -74,6 +71,23 @@ app.post("/campgrounds", function(req, res){
 		} else {
 			//redirect back to page (refresh)
 			res.redirect("/campgrounds");
+		}
+	});
+});
+//NEW - show form to create new campground
+app.get("/campgrounds/new", function(req, res){
+	res.render("new");
+});
+
+//SHOW - show more info of one campground
+app.get("/campgrounds/:id", function(req, res){
+	//find campground with ID
+	Campground.findById(req.params.id, function(err, foundCampground){
+		if(err){
+			console.log(err);
+		} else {
+			//render show template of campground
+			res.render("show", {campground: foundCampground});
 		}
 	});
 });
