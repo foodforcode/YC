@@ -37,14 +37,15 @@ var campgrounds = [
 		{name: "Yosemite", image: "https://picjumbo.com/wp-content/uploads/camping-place-on-snowy-mountain-with-fjord-view-2210x1243.jpg"},
 		{name: "goat hill", image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format"}
 	];
+
 //INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
 	//get all campgrounds from DB
-	Campground.find({}, function(err, allcampgrounds){
+	Campground.find({}, function(err, allCampgrounds){
 		if(err){
 			console.log(err);
 		} else {
-		res.render("index", {campgrounds:allcampgrounds});
+		res.render("index", {campgrounds:allCampgrounds});
 								//{variable: property}
 		}
 	});
