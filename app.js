@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var Campground = require("./models/campground");
+var Comment = require("./models/comment");
 var seedDB = require("./seeds");
 
 seedDB();
@@ -105,7 +106,28 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
 	});
 });
 
-
+app.post("/campgrounds/:id/comments", function (req, res){
+	//look up campground by ID
+	Campground.findById(req.params.id, function(err, campground){
+		if(err){
+			console.log(err);
+			res.redirect("/campgrounds");
+		} else {
+			//create new comment
+			Comment.create(req.body.comment, function(err, comment){
+				if(err){
+					console.log(err);
+				} else {
+					campground.comments.push(comment);
+					//connect new comment to campground
+					campground.save();
+						//redirect to show page
+					res.redirect('/campgrounds/' + campground._id);
+				}
+			});
+		}
+	})
+})
 
 app.get("*", function(req, res){
 	res.send("This page does not exist yet!")

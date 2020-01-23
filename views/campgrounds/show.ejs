@@ -1,17 +1,46 @@
 <%- include("../partials/headers") %>
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<p class="lead">YelpCamp</p>
+			<p><a href="/campgrounds" class="btn btn-info">Return</a></p>
+			<div class="list-group">
+				<li class="list-group-item">Uno</li>
+				<li class="list-group-item">Dos</li>
+				<li class="list-group-item">Tres</li>
+			</div>
+			MAP SPACE
+		</div>
+		<div class="col-md-9">
+			<div class="thumbnail">
+				<img class="img-responsive" src="<%= campground.image %>">
+				<div class="caption">
+					<h4 class="pull-right">$18.00/night</h4>
+					<h4><a><%= campground.name %></a></h4>
+					<p><%= campground.description %></p>
+				</div>
+			</div>
+			<div class="well">
+				<div class="text-right">
+					<a class="btn btn-primary" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
+				</div>
+				<hr>
+				<% campground.comments.forEach(function(comment){ %>
+				<div class="row">
+					<div class="col-md-12">
+					<strong><%= comment.author %></strong>
+					<span class="pull-right">10 days ago</span>
+					<p><%= comment.text %></p>
+					</div>
+				</div>
+	<% }); %>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="container">
-	<a href="/campgrounds" class="btn btn-info">Return</a>
-	<h1><%= campground.name %></h1>
-
-	<img src="<%= campground.image %>">
-
-	<p><%= campground.description %></p>
-	<% campground.comments.forEach(function(comment){ %>
-		<p>
-			<strong><%= comment.author %></strong> - <%= comment.text %>
-		</p>
-	<% }); %>
+	
 </div>
 
 <%- include("../partials/footer") %>
