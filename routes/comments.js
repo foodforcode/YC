@@ -1,5 +1,5 @@
 var express = require("express");
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
 
@@ -30,6 +30,12 @@ router.post("/campgrounds/:id/comments", isLoggedIn, function (req, res){
 				if(err){
 					console.log(err);
 				} else {
+					//add username and id to comment
+					comment.author.id = req.user._id;
+					comment.author.username = req.user.username;
+					// = from model
+					//save comment
+					comment.save()
 					campground.comments.push(comment);
 					//connect new comment to campground
 					campground.save();

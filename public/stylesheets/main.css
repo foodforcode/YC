@@ -9,3 +9,13 @@ body {
 .thumbnail {
 	padding: 0px;
 }
+
+.edit-form {
+	height: 100px;
+	width: 300px;
+	margin: 0 auto;
+}
+
+#delete {
+	display: inline;
+}
