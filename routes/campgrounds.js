@@ -58,11 +58,12 @@ router.get("/:id", function(req, res){
 router.get("/:id/edit", checkOwnership, function(req, res){
 	Campground.findById(req.params.id, function(err, foundCampground){
 		res.render("campgrounds/edit", {campground: foundCampground});
+	});
 });
 
 //UPDATE CAMPGROUND ROUTE
 
-router.put("/:id", function(req, res){
+router.put("/:id", checkOwnership, function(req, res){
 	//find and update
 	Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
 		if(err){
@@ -75,7 +76,7 @@ router.put("/:id", function(req, res){
 });
 
 //DESTROY CAMPGROUND
-router.delete("/:id", function(req, res){
+router.delete("/:id", checkOwnership, function(req, res){
 	Campground.findByIdAndRemove(req.params.id, function(err){
 		if(err){
 			res.redirect("/campgrounds");
@@ -85,7 +86,8 @@ router.delete("/:id", function(req, res){
 	});
 });
 
-//MIDDLEWARE
+// MIDDLEWARE
+// ============
 function isLoggedIn(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
@@ -101,6 +103,7 @@ function checkOwnership(req, res, next) {
 			} else {
 				//does user own post?
 		if(foundCampground.author.id.equals(req.user._id)){
+		//.author.id is mongoose object (cannot use ===)
 				next();
 				} else {
 					res.redirect("back");
@@ -108,8 +111,10 @@ function checkOwnership(req, res, next) {
 			}
 		});
 			} else {
-			res.redirect("back");
+			res.redirect("back");	
 		}
 };
+
+// ============
 
 module.exports = router;

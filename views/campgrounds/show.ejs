@@ -18,14 +18,16 @@
 					<h4 class="pull-right">$18.00/night</h4>
 					<h4><a><%= campground.name %></a></h4>
 					<p><%= campground.description %></p>
-					<p style="text-transform: capitalize;">
-						<em>Submitted by: <%= campground.author.username %></em></p>
+					<p>
+						<em>Submitted by: <span style="text-transform: lowercase;"><%= campground.author.username %></span></em></p>
+					<% if(currentUser && campground.author.id.equals(currentUser._id)) { %>
 					<a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
 					<form id="delete" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
 						<button class="btn btn-danger">
 							Delete
 						</button>
 					</form>
+				<% } %>
 				</div>
 			</div>
 			<div class="well">
@@ -39,6 +41,7 @@
 						<strong><%= comment.author.username %></strong>
 						<span class="pull-right">10 days ago</span>
 						<p><%= comment.text %></p>
+						<a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
 					</div>
 				</div>
 	<% }); %>
