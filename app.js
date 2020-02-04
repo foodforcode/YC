@@ -2,6 +2,7 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var flash = require("connect-flash");
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var methodOverride = require("method-override");
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
+app.use(flash());
 
 // seedDB(); Seed the DB
 
@@ -59,10 +61,14 @@ passport.deserializeUser(User.deserializeUser());
 //MIDDLEWARE
 app.use(function(req, res, next){
 	res.locals.currentUser = req.user;
+	res.locals.error = req.flash("error");
+	res.locals.success = req.flash("success");
+	res.locals.warning = req.flash("warning");
+	res.locals.info = req.flash("info");
 	next();
 });
 
-app.use(indexRoutes);
+app.use("/", indexRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 app.use("/campgrounds", campgroundRoutes);
 
