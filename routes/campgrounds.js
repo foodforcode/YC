@@ -74,7 +74,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
 			res.redirect("/campgrounds");
 		} else {
 			//redirect to show page
-			req.flash("success", req.body.campground + " has been updated!");
+			req.flash("success", req.body.campground.name + " has been updated!");
 			res.redirect("/campgrounds/" + req.params.id);
 		}
 	});
