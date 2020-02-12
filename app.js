@@ -76,6 +76,4 @@ app.get("*", function(req, res){
 	res.send("This page does not exist yet!")
 });
 
-app.listen(3000, function(){
-	console.log("yelpin!!!");
-});
+app.listen(process.env.PORT, process.env.IP);
